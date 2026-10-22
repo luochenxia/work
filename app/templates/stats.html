@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}问卷统计{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><a class="back-link" href="/">← 返回</a><h1>{{ survey.title }}统计</h1></div>
+  <div class="metric"><strong>{{ total }}</strong><span>总提交数</span></div>
+</div>
+{% if selected_question_id %}
+<p><a class="button secondary" href="/surveys/{{ survey._id }}/stats">查看整个问卷的统计</a></p>
+{% endif %}
+{% for item in stats %}
+<article class="content-card stats-card" id="question-{{ item.question._id }}">
+  <h2>{{ item.question.order + 1 }}. {{ item.question.prompt }}</h2>
+  <p class="muted">{{ {'single':'单选题','multiple':'多选题','text':'文本填空','number':'数字填空'}[item.question.type] }}</p>
+  {% if not selected_question_id %}
+  <p><a href="/surveys/{{ survey._id }}/stats?question_id={{ item.question._id }}">只看这一题的统计</a></p>
+  {% endif %}
+  {% if item.data.kind == 'options' %}
+    <div class="metric"><strong>{{ item.data.answered_total }}</strong><span>回答人数</span></div>
+    {% if item.data["items"] %}
+    <table><thead><tr><th>选项</th><th>次数</th></tr></thead><tbody>
+      {% for row in item.data["items"] %}<tr><td>{{ row._id }}</td><td>{{ row.count }}</td></tr>{% endfor %}
+    </tbody></table>
+    {% else %}<p>暂无回答。</p>{% endif %}
+  {% elif item.data.kind == 'number' %}
+    {% if item.data["summary"] %}
+    <div class="metrics-row">
+      <div class="metric"><strong>{{ item.data["summary"].count }}</strong><span>回答数</span></div>
+      <div class="metric"><strong>{{ '%.2f'|format(item.data["summary"].average) }}</strong><span>平均值</span></div>
+      <div class="metric"><strong>{{ item.data["summary"].minimum }}</strong><span>最小值</span></div>
+      <div class="metric"><strong>{{ item.data["summary"].maximum }}</strong><span>最大值</span></div>
+    </div>
+    <p>全部数值：{{ item.data["summary"]["values"]|join('、') }}</p>
+    {% else %}<p>暂无回答。</p>{% endif %}
+  {% else %}
+    {% if item.data["items"] %}<ul class="answer-list">{% for row in item.data["items"] %}<li>{{ row.value }}</li>{% endfor %}</ul>
+    {% else %}<p>暂无回答。</p>{% endif %}
+  {% endif %}
+</article>
+{% endfor %}
+{% endblock %}
+
