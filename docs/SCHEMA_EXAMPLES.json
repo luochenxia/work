@@ -1,0 +1,56 @@
+{
+  "users": {
+    "_id": "ObjectId",
+    "username": "student01",
+    "password_hash": "scrypt$<salt>$<digest>",
+    "created_at": "ISODate"
+  },
+  "surveys": {
+    "_id": "ObjectId",
+    "owner_id": "ObjectId(users._id)",
+    "public_id": "public-random-id",
+    "title": "课程满意度调查",
+    "description": "用于收集课程反馈",
+    "allow_anonymous": true,
+    "allow_multiple": false,
+    "status": "published",
+    "deadline": "ISODate or null",
+    "questions": [
+      {
+        "_id": "question-id",
+        "prompt": "你是否参加了全部课程？",
+        "type": "single",
+        "required": true,
+        "options": ["是", "否"],
+        "validation": {},
+        "jump_rules": [
+          {
+            "_id": "rule-id",
+            "operator": "equals",
+            "value": "否",
+            "target_question_id": "another-question-id"
+          }
+        ],
+        "order": 0
+      }
+    ],
+    "created_at": "ISODate",
+    "updated_at": "ISODate"
+  },
+  "responses": {
+    "_id": "ObjectId",
+    "survey_id": "ObjectId(surveys._id)",
+    "respondent_id": "ObjectId(users._id) or null",
+    "is_anonymous": true,
+    "single_submission_key": "HMAC value when repeat submission is disabled",
+    "answers": [
+      {
+        "question_id": "question-id",
+        "value": "是"
+      }
+    ],
+    "visited_question_ids": ["question-id"],
+    "submitted_at": "ISODate"
+  }
+}
+
