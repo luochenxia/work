@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}编辑问卷{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <a class="back-link" href="/">← 返回我的问卷</a>
+    <h1>编辑问卷</h1>
+  </div>
+  <span class="status status-{{ survey.status }}">{{ {'draft':'草稿','published':'已发布','closed':'已关闭'}[survey.status] }}</span>
+</div>
+
+{% if not editable %}<p class="alert error">问卷已发布，题目与跳转规则已锁定。若要修改，请复制为新问卷后选用新版本。</p>{% endif %}
+
+<section class="content-card">
+  <h2>基本设置</h2>
+  <form method="post" action="/surveys/{{ survey._id }}/settings" class="stack-form">
+    <label>标题<input name="title" value="{{ survey.title }}" required></label>
+    <label>说明<textarea name="description" rows="3">{{ survey.description }}</textarea></label>
+    <label>截止时间<input type="datetime-local" name="deadline" value="{{ survey.deadline_form }}"></label>
+    <label class="check-row"><input type="checkbox" name="allow_anonymous" value="1" {% if survey.allow_anonymous %}checked{% endif %}> 允许匿名填写</label>
+    <p class="muted small">填写者仍需先登录；匿名表示统计和回答记录不显示填写者身份。</p>
+    <label class="check-row"><input type="checkbox" name="allow_multiple" value="1" {% if survey.allow_multiple %}checked{% endif %}> 允许重复填写</label>
+    <button class="button secondary" type="submit">保存设置</button>
+  </form>
+</section>
+
+<section class="section-block">
+  <div class="section-heading"><h2>题目列表</h2><span class="muted">{{ survey.questions|length }} 道题</span></div>
+  {% for question in survey.questions|sort(attribute='order') %}
+  <article class="question-card">
+    <div class="question-title-row">
+      <div>
+        <span class="question-number">第 {{ loop.index }} 题</span>
+        <h3>{{ question.prompt }}</h3>
+      </div>
+      {% if editable %}<form method="post" action="/surveys/{{ survey._id }}/questions/{{ question._id }}/delete" onsubmit="return confirm('确定删除这道题吗？')">
+        <button class="link-button danger-text" type="submit">删除</button>
+      </form>{% endif %}
+    </div>
+    <p class="muted">题型：{{ {'single':'单选','multiple':'多选','text':'文本填空','number':'数字填空'}[question.type] }} · {{ '必答' if question.required else '选答' }}</p>
+    {% if question.options %}<p>选项：{{ question.options|join('、') }}</p>{% endif %}
+    {% if question.validation %}<p class="small">校验规则：{{ question.validation }}</p>{% endif %}
+    {% if question.source_question_id %}
+    <p><a href="/questions/{{ question.source_question_id }}">版本历史与使用位置</a> · 当前固定使用 v{{ question.source_version }} · <a href="/questions/{{ question.source_question_id }}/stats?version_id={{ question.source_version_id }}">跨问卷统计</a></p>
+    <form method="post" action="/questions/{{ question.source_question_id }}/bank" class="catalog-filter"><select name="bank_id"><option value="">默认题库</option>{% for bank in banks %}<option value="{{ bank._id }}">{{ bank.name }}</option>{% endfor %}</select><button class="button secondary">保存至题库</button></form>
+    {% if editable %}<form method="post" action="/surveys/{{ survey._id }}/questions/{{ question._id }}/version" class="catalog-filter"><select name="version_id">{% for version in versions if version.series_id == question.source_question_id %}<option value="{{ version._id }}" {% if version._id == question.source_version_id %}selected{% endif %}>v{{ version.version }} · {{ version.prompt }}</option>{% endfor %}</select><button class="button secondary">切换此题版本</button></form><p class="small muted">切换版本会清空本题的跳转条件，请重新设置。其他题目跳入本题的规则保留。</p>{% endif %}
+    {% endif %}
+
+    <div class="rule-panel">
+      <h4>跳转规则</h4>
+      {% if question.jump_rules %}
+        {% for rule in question.jump_rules %}
+        <div class="rule-row">
+          <span>
+            当答案 {{ {'equals':'等于','contains':'包含','gt':'大于','gte':'大于等于','lt':'小于','lte':'小于等于'}[rule.operator] }} “{{ rule.value }}” → 跳至：
+            {% for target in survey.questions %}
+              {% if target._id == rule.target_question_id %}{{ target.prompt }}{% endif %}
+            {% endfor %}
+          </span>
+          {% if editable %}<form method="post" action="/surveys/{{ survey._id }}/questions/{{ question._id }}/jump-rules/{{ rule._id }}/delete">
+            <button class="link-button danger-text" type="submit">移除</button>
+          </form>{% endif %}
+        </div>
+        {% endfor %}
+      {% else %}<p class="muted small">未设置，默认进入下一题。</p>{% endif %}
+
+      {% set later_questions = survey.questions|selectattr('order', 'gt', question.order)|list %}
+      {% if editable and later_questions %}
+      <form method="post" action="/surveys/{{ survey._id }}/questions/{{ question._id }}/jump-rules" class="inline-grid-form">
+        <select name="operator" required>
+          <option value="equals">答案等于</option>
+          <option value="contains">多选包含</option>
+          <option value="gt">数字大于</option>
+          <option value="gte">数字大于等于</option>
+          <option value="lt">数字小于</option>
+          <option value="lte">数字小于等于</option>
+        </select>
+        <input name="value" placeholder="比较值" required>
+        <select name="target_question_id" required>
+          {% for target in later_questions %}<option value="{{ target._id }}">跳至：{{ target.prompt }}</option>{% endfor %}
+        </select>
+        <button class="button secondary" type="submit">添加规则</button>
+      </form>
+      {% endif %}
+    </div>
+  </article>
+  {% else %}
+  <p class="empty-inline">尚未添加题目。</p>
+  {% endfor %}
+</section>
+
+{% if editable %}
+<section class="content-card"><h2>从题库选题</h2>
+<p class="small muted">选用共享题目时，原作者可查看该题的使用位置及匿名统计，不开放其他题目或填写者账号。</p>
+<form method="get" action="/surveys/{{ survey._id }}/edit" class="catalog-filter"><select name="bank_id"><option value="">全部可用题目</option>{% for bank in banks %}<option value="{{ bank._id }}" {% if selected_bank_id == bank._id|string %}selected{% endif %}>{{ bank.name }}</option>{% endfor %}</select><button class="button secondary">筛选题库</button><a href="/questions/new">新建可复用题目</a></form>
+{% if versions %}<form method="post" action="/surveys/{{ survey._id }}/questions/from-library" class="catalog-filter"><select name="version_id" required>{% for version in versions %}<option value="{{ version._id }}">{{ version.prompt }} · v{{ version.version }}</option>{% endfor %}</select><button class="button primary">添加选定版本</button></form>{% else %}<p class="muted">该范围暂无题目，请新建或让他人共享题目。</p>{% endif %}</section>
+<section class="content-card">
+  <h2>添加题目</h2>
+  <p class="muted small">新题同时保存在默认题库，之后可在其他问卷中选用。</p>
+  <form method="post" action="/surveys/{{ survey._id }}/questions" class="stack-form" id="question-form">
+    <label>题目内容<input name="prompt" required></label>
+    <label>题型
+      <select name="question_type" id="question-type">
+        <option value="single">单选题</option>
+        <option value="multiple">多选题</option>
+        <option value="text">文本填空</option>
+        <option value="number">数字填空</option>
+      </select>
+    </label>
+    <label class="check-row"><input type="checkbox" name="required" value="1"> 必答题</label>
+    <div data-types="single multiple">
+      <label>选项（每行一个）<textarea name="options_text" rows="5" placeholder="选项 A&#10;选项 B"></textarea></label>
+    </div>
+    <div class="two-columns" data-types="multiple">
+      <label>最少选择数<input type="number" min="0" name="min_choices"></label>
+      <label>最多选择数<input type="number" min="1" name="max_choices"></label>
+    </div>
+    <div class="two-columns" data-types="text">
+      <label>最少字符数<input type="number" min="0" name="min_length"></label>
+      <label>最多字符数<input type="number" min="1" name="max_length"></label>
+    </div>
+    <div data-types="number">
+      <div class="two-columns">
+        <label>最小值<input type="number" step="any" name="min_value"></label>
+        <label>最大值<input type="number" step="any" name="max_value"></label>
+      </div>
+      <label class="check-row"><input type="checkbox" name="integer_only" value="1"> 必须为整数</label>
+    </div>
+    <button class="button primary" type="submit">添加题目</button>
+  </form>
+</section>
+{% endif %}
+
+<section class="publish-bar">
+  {% if survey.status == 'draft' %}
+  <form method="post" action="/surveys/{{ survey._id }}/publish"><button class="button primary" type="submit">发布问卷</button></form>
+  {% elif survey.status == 'published' %}
+  <a class="button primary" href="/survey/{{ survey.public_id }}">打开填写页面</a>
+  <form method="post" action="/surveys/{{ survey._id }}/close"><button class="button danger" type="submit">关闭问卷</button></form>
+  {% endif %}
+  <a class="button secondary" href="/surveys/{{ survey._id }}/stats">查看统计</a>
+  <form method="post" action="/surveys/{{ survey._id }}/clone"><button class="button secondary">复制为新问卷</button></form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const typeSelect = document.getElementById('question-type');
+  const typedSections = [...document.querySelectorAll('[data-types]')];
+  function updateQuestionFields() {
+    const current = typeSelect.value;
+    typedSections.forEach(section => {
+      section.hidden = !section.dataset.types.split(' ').includes(current);
+    });
+  }
+  if(typeSelect){typeSelect.addEventListener('change', updateQuestionFields);updateQuestionFields();}
+</script>
+{% endblock %}
+

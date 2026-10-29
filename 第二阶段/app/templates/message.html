@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="message-card">
+  <h1>{{ title }}</h1>
+  <p>{{ message }}</p>
+  <a class="button primary" href="{{ back_url }}">返回</a>
+</section>
+{% endblock %}
+

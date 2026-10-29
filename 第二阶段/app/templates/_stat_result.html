@@ -1,0 +1,8 @@
+{% if data.kind == 'options' %}
+<div class="metric"><strong>{{ data.answered_total }}</strong><span>回答数</span></div>
+<table class="catalog-table"><thead><tr><th>选项</th><th>次数</th></tr></thead><tbody>{% for row in data['items'] %}<tr><td>{{ row._id }}</td><td>{{ row.count }}</td></tr>{% endfor %}</tbody></table>
+{% elif data.kind == 'number' %}
+{% if data.summary %}<div class="metrics-row"><div class="metric"><strong>{{ data.summary.count }}</strong><span>回答数</span></div><div class="metric"><strong>{{ '%.2f'|format(data.summary.average) }}</strong><span>平均值</span></div><div class="metric"><strong>{{ data.summary.minimum }}</strong><span>最小值</span></div><div class="metric"><strong>{{ data.summary.maximum }}</strong><span>最大值</span></div></div>
+<h3>数值分布</h3><table class="catalog-table"><thead><tr><th>数值</th><th>次数</th></tr></thead><tbody>{% for row in data.distribution %}<tr><td>{{ row._id }}</td><td>{{ row.count }}</td></tr>{% endfor %}</tbody></table>
+<p>全部数值：{{ data.summary['values']|join('、') }}</p>{% else %}<p>暂无回答。</p>{% endif %}
+{% else %}{% if data['items'] %}<ul>{% for row in data['items'] %}<li>{{ row.value }}</li>{% endfor %}</ul>{% else %}<p>暂无回答。</p>{% endif %}{% endif %}

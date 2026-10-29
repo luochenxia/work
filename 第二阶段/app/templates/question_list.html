@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}题目库{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>题目库</h1><p class="muted">保存常用题目，选用自己的题目或他人共享的题目。</p></div>
+<div class="actions"><a class="button secondary" href="/banks">管理题库</a><a class="button primary" href="/questions/new">新建题目</a></div></div>
+<form method="get" action="/questions" class="catalog-filter">
+  <select name="bank_id"><option value="">全部可用题目</option>{% for bank in banks %}<option value="{{ bank._id }}" {% if bank_id == bank._id|string %}selected{% endif %}>{{ bank.name }}</option>{% endfor %}</select>
+  <input name="q" value="{{ search }}" placeholder="搜索题目内容"><button class="button secondary">筛选</button>
+</form>
+{% for item in items %}
+<article class="content-card">
+  <div class="card-topline"><span class="status status-draft">v{{ item.version.version }}</span><span class="muted">{{ '我的题目' if item.series.owner_id == current_user._id else '共享题目' }}</span></div>
+  <h2 class="catalog-prompt"><a href="/questions/{{ item.series._id }}">{{ item.version.prompt }}</a></h2>
+  <p>{{ {'single':'单选','multiple':'多选','text':'文本','number':'数字'}[item.version.type] }} · {{ '必答' if item.version.required else '选答' }}</p>
+  {% if item.series.owner_id != current_user._id %}<p class="small muted">选用后，题目作者可查看此题的使用位置及匿名汇总；你的其他题目和填写者账号不会开放。</p>{% endif %}
+  <div class="actions"><a class="button secondary" href="/questions/{{ item.series._id }}">历史版本与使用位置</a><a class="button secondary" href="/questions/{{ item.series._id }}/stats">跨问卷统计</a></div>
+  {% if drafts %}<form method="post" action="/surveys/{{ drafts[0]._id }}/questions/from-library" class="catalog-filter" onsubmit="this.action='/surveys/'+this.elements.survey_id.value+'/questions/from-library'">
+    <input type="hidden" name="version_id" value="{{ item.version._id }}">
+    <select name="survey_id">{% for draft in drafts %}<option value="{{ draft._id }}">{{ draft.title }}</option>{% endfor %}</select>
+    <button class="button primary">将此版本加入问卷</button>
+  </form>{% else %}<p class="small muted">先<a href="/surveys/new">新建问卷</a>，即可选用题目。</p>{% endif %}
+  {% if bank_id %}<form method="post" action="/banks/{{ bank_id }}/remove/{{ item.series._id }}"><button class="link-button danger-text">从此题库移出</button></form>{% endif %}
+</article>
+{% else %}<p class="empty-inline">没有匹配的可用题目。可以新建题目，或让其他用户共享给你的用户名。</p>{% endfor %}
+{% endblock %}

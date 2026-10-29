@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MongoDB 问卷系统{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">MongoDB 问卷系统</a>
+    <nav>
+      {% if current_user %}
+        <a href="/">我的问卷</a>
+        <a href="/questions">题目库</a>
+        <a href="/banks">管理题库</a>
+        <span class="user-name">{{ current_user.username }}</span>
+        <form action="/logout" method="post" class="inline-form">
+          <button class="link-button" type="submit">退出</button>
+        </form>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="page-shell">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">课程大作业 · 题库与版本管理</footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+

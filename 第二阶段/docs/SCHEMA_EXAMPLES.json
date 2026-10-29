@@ -1,0 +1,99 @@
+{
+  "note": "以下为结构示例，ObjectId 与 Date 在真实 MongoDB 中使用对应 BSON 类型。",
+  "users": {
+    "_id": "ObjectId",
+    "username": "alice",
+    "password_hash": "scrypt...",
+    "created_at": "Date"
+  },
+  "question_series": {
+    "_id": "question-series-id",
+    "owner_id": "user-id",
+    "latest_version_id": "version-3-id",
+    "latest_version": 3,
+    "next_version": 3,
+    "shared_with": [
+      "colleague-id"
+    ],
+    "is_public": false,
+    "created_at": "Date",
+    "updated_at": "Date"
+  },
+  "question_versions": {
+    "_id": "version-3-id",
+    "series_id": "question-series-id",
+    "version": 3,
+    "parent_version_id": "version-2-id",
+    "restored_from_id": "version-1-id",
+    "prompt": "你的年龄（周岁）",
+    "type": "number",
+    "required": true,
+    "options": [],
+    "validation": {
+      "min_value": 0,
+      "max_value": 120,
+      "integer_only": true
+    },
+    "created_at": "Date"
+  },
+  "question_banks": {
+    "_id": "bank-id",
+    "owner_id": "user-id",
+    "name": "人口信息",
+    "description": "常用题目",
+    "question_ids": [
+      "question-series-id"
+    ],
+    "created_at": "Date"
+  },
+  "surveys": {
+    "_id": "survey-id",
+    "owner_id": "user-id",
+    "public_id": "public-link-id",
+    "title": "学习情况调查",
+    "status": "published",
+    "allow_anonymous": true,
+    "allow_multiple": false,
+    "deadline": null,
+    "questions": [
+      {
+        "_id": "local-question-id",
+        "source_question_id": "question-series-id",
+        "source_version_id": "version-1-id",
+        "source_version": 1,
+        "prompt": "你的年龄（周岁）",
+        "type": "number",
+        "required": true,
+        "options": [],
+        "validation": {
+          "min_value": 0,
+          "max_value": 120,
+          "integer_only": true
+        },
+        "order": 0,
+        "jump_rules": []
+      }
+    ],
+    "published_at": "Date",
+    "created_at": "Date",
+    "updated_at": "Date"
+  },
+  "responses": {
+    "_id": "response-id",
+    "survey_id": "survey-id",
+    "respondent_id": null,
+    "is_anonymous": true,
+    "single_submission_key": "HMAC value when repeat is disabled",
+    "answers": [
+      {
+        "question_id": "local-question-id",
+        "value": 20
+      }
+    ],
+    "visited_question_ids": [
+      "local-question-id"
+    ],
+    "submitted_at": "Date"
+  }
+}
+

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}管理题库{% endblock %}
+{% block content %}
+<a href="/questions">← 返回题目库</a><h1>管理题库</h1>
+<section class="content-card"><h2>新建题库</h2><form method="post" action="/banks" class="stack-form"><label>题库名称<input name="name" maxlength="100" required></label><label>说明<input name="description"></label><button class="button primary">创建题库</button></form></section>
+{% for bank in banks %}<article class="content-card"><div class="page-heading"><div><h2>{{ bank.name }}</h2><p class="muted">{{ bank.question_ids|length }} 个题目系列，选用时可指定版本。</p></div><a class="button primary" href="/questions?bank_id={{ bank._id }}">查看题目与选题</a></div>
+<form method="post" action="/banks/{{ bank._id }}/settings" class="stack-form"><label>名称<input name="name" value="{{ bank.name }}" maxlength="100" required></label><label>说明<input name="description" value="{{ bank.description }}"></label><button class="button secondary">保存题库设置</button></form>
+<form class="actions" method="post" action="/banks/{{ bank._id }}/delete" onsubmit="return confirm('仅删除题库分类，不会删除题目、历史版本或问卷，继续吗？')"><button class="button danger">删除题库分类</button></form></article>
+{% else %}<p class="empty-inline">尚未创建题库。保存第一道题目时也会自动建立默认题库。</p>{% endfor %}
+{% endblock %}

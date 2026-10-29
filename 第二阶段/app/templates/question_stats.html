@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}题目跨问卷统计{% endblock %}
+{% block content %}
+<a href="/questions/{{ series._id }}">← 返回版本历史</a><h1>题目跨问卷统计</h1>
+<p class="muted">{% if is_author %}汇总此题在所有使用问卷中的匿名回答，不展示填写者账号或其他题目。{% else %}展示此题在本人创建的问卷中的回答。{% endif %}不同版本分别统计，避免题型或计量口径变化后混算。相同填写者在不同问卷的提交分别计数。</p>
+{% if selected_version_id %}<p><a class="button secondary" href="/questions/{{ series._id }}/stats">查看全部版本（分别统计）</a></p>{% endif %}
+{% for item in items %}<article class="content-card stats-card"><h2>v{{ item.question.version }} · {{ item.question.prompt }}</h2><p class="muted">使用于 {{ item.survey_count }} 份问卷</p>
+{% set data=item.data %}{% include '_stat_result.html' %}
+</article>{% endfor %}
+{% endblock %}

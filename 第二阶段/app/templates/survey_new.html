@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}新建问卷{% endblock %}
+{% block content %}
+<section class="content-card narrow">
+  <h1>新建问卷</h1>
+  {% if error %}<p class="alert error">{{ error }}</p>{% endif %}
+  <form method="post" class="stack-form">
+    <label>问卷标题<input name="title" maxlength="100" required></label>
+    <label>问卷说明<textarea name="description" rows="4"></textarea></label>
+    <label>截止时间<input type="datetime-local" name="deadline"></label>
+    <label class="check-row"><input type="checkbox" name="allow_anonymous" value="1"> 允许匿名填写</label>
+    <p class="muted small">填写者仍需先登录；匿名表示统计和回答记录不显示填写者身份。</p>
+    <label class="check-row"><input type="checkbox" name="allow_multiple" value="1"> 允许同一用户重复填写</label>
+    <div class="actions">
+      <button class="button primary" type="submit">创建并添加题目</button>
+      <a class="button secondary" href="/">取消</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
