@@ -1,0 +1,667 @@
+{
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "timing": "5 warmups + 31 repetitions, median microseconds, no file I/O"
+  },
+  "tests": {
+    "random_path_cases": 250,
+    "random_tree_cases": 100,
+    "random_game_value_sets": 100,
+    "path_configurations_per_map": 4,
+    "matrix_reference_checks": 36,
+    "independent_game_states": 100,
+    "invalid_input_cases": 5,
+    "interface_examples": 5,
+    "boundary_cases": 4,
+    "status": "passed"
+  },
+  "maze": {
+    "path": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "cost": 7,
+    "enter_costs": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "weighted": {
+    "path": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        4
+      ]
+    ],
+    "cost": 7,
+    "enter_costs": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ]
+  },
+  "distances": {
+    "A": {
+      "A": 0,
+      "B": 12,
+      "T1": 10,
+      "T2": 4,
+      "T3": 8,
+      "T4": 8
+    },
+    "B": {
+      "A": 12,
+      "B": 0,
+      "T1": 8,
+      "T2": 8,
+      "T3": 4,
+      "T4": 10
+    },
+    "T1": {
+      "A": 10,
+      "B": 8,
+      "T1": 0,
+      "T2": 6,
+      "T3": 6,
+      "T4": 12
+    },
+    "T2": {
+      "A": 4,
+      "B": 8,
+      "T1": 6,
+      "T2": 0,
+      "T3": 6,
+      "T4": 6
+    },
+    "T3": {
+      "A": 8,
+      "B": 4,
+      "T1": 6,
+      "T2": 6,
+      "T3": 0,
+      "T4": 6
+    },
+    "T4": {
+      "A": 8,
+      "B": 10,
+      "T1": 12,
+      "T2": 6,
+      "T3": 6,
+      "T4": 0
+    }
+  },
+  "search": [
+    {
+      "case": "maze",
+      "heuristic": "zero",
+      "prefer_deep": false,
+      "cost": 7,
+      "nodes": 17,
+      "median_us": 30.6
+    },
+    {
+      "case": "maze",
+      "heuristic": "manhattan",
+      "prefer_deep": false,
+      "cost": 7,
+      "nodes": 14,
+      "median_us": 30.5
+    },
+    {
+      "case": "maze",
+      "heuristic": "manhattan",
+      "prefer_deep": true,
+      "cost": 7,
+      "nodes": 14,
+      "median_us": 31.5
+    },
+    {
+      "case": "weighted",
+      "heuristic": "zero",
+      "prefer_deep": false,
+      "cost": 7,
+      "nodes": 15,
+      "median_us": 33.1
+    },
+    {
+      "case": "weighted",
+      "heuristic": "manhattan",
+      "prefer_deep": false,
+      "cost": 7,
+      "nodes": 11,
+      "median_us": 30.3
+    },
+    {
+      "case": "weighted",
+      "heuristic": "manhattan",
+      "prefer_deep": true,
+      "cost": 7,
+      "nodes": 9,
+      "median_us": 27.2
+    },
+    {
+      "case": "open_40",
+      "heuristic": "zero",
+      "prefer_deep": false,
+      "cost": 78,
+      "nodes": 1600,
+      "median_us": 3025.4
+    },
+    {
+      "case": "open_40",
+      "heuristic": "manhattan",
+      "prefer_deep": false,
+      "cost": 78,
+      "nodes": 1600,
+      "median_us": 3384.1
+    },
+    {
+      "case": "open_40",
+      "heuristic": "manhattan",
+      "prefer_deep": true,
+      "cost": 78,
+      "nodes": 79,
+      "median_us": 667.0
+    }
+  ],
+  "tree": [
+    {
+      "order": "original",
+      "algorithm": "Minimax",
+      "value": 5,
+      "nodes": 15,
+      "leaves": 8,
+      "cutoffs": 0,
+      "median_us": 11.1,
+      "trace": [
+        [
+          "root.0.0.0",
+          3
+        ],
+        [
+          "root.0.0.1",
+          5
+        ],
+        [
+          "root.0.1.0",
+          6
+        ],
+        [
+          "root.0.1.1",
+          9
+        ],
+        [
+          "root.1.0.0",
+          6
+        ],
+        [
+          "root.1.0.1",
+          9
+        ],
+        [
+          "root.1.1.0",
+          1
+        ],
+        [
+          "root.1.1.1",
+          2
+        ]
+      ]
+    },
+    {
+      "order": "original",
+      "algorithm": "Alpha-beta",
+      "value": 5,
+      "nodes": 14,
+      "leaves": 7,
+      "cutoffs": 1,
+      "median_us": 10.7,
+      "trace": [
+        [
+          "root.0.0.0",
+          3
+        ],
+        [
+          "root.0.0.1",
+          5
+        ],
+        [
+          "root.0.1.0",
+          6
+        ],
+        [
+          "root.1.0.0",
+          6
+        ],
+        [
+          "root.1.0.1",
+          9
+        ],
+        [
+          "root.1.1.0",
+          1
+        ],
+        [
+          "root.1.1.1",
+          2
+        ]
+      ]
+    },
+    {
+      "order": "reverse",
+      "algorithm": "Minimax",
+      "value": 5,
+      "nodes": 15,
+      "leaves": 8,
+      "cutoffs": 0,
+      "median_us": 10.8,
+      "trace": [
+        [
+          "root.1.1.1",
+          2
+        ],
+        [
+          "root.1.1.0",
+          1
+        ],
+        [
+          "root.1.0.1",
+          9
+        ],
+        [
+          "root.1.0.0",
+          6
+        ],
+        [
+          "root.0.1.1",
+          9
+        ],
+        [
+          "root.0.1.0",
+          6
+        ],
+        [
+          "root.0.0.1",
+          5
+        ],
+        [
+          "root.0.0.0",
+          3
+        ]
+      ]
+    },
+    {
+      "order": "reverse",
+      "algorithm": "Alpha-beta",
+      "value": 5,
+      "nodes": 14,
+      "leaves": 7,
+      "cutoffs": 1,
+      "median_us": 10.8,
+      "trace": [
+        [
+          "root.1.1.1",
+          2
+        ],
+        [
+          "root.1.1.0",
+          1
+        ],
+        [
+          "root.1.0.1",
+          9
+        ],
+        [
+          "root.0.1.1",
+          9
+        ],
+        [
+          "root.0.1.0",
+          6
+        ],
+        [
+          "root.0.0.1",
+          5
+        ],
+        [
+          "root.0.0.0",
+          3
+        ]
+      ]
+    }
+  ],
+  "game": [
+    {
+      "depth": 2,
+      "order": "original",
+      "algorithm": "Minimax",
+      "best_target": "T2",
+      "best_value": -1,
+      "sequence": [
+        "T2",
+        "T3"
+      ],
+      "nodes": 17,
+      "leaves": 12,
+      "cutoffs": 0,
+      "median_us": 24.7
+    },
+    {
+      "depth": 2,
+      "order": "original",
+      "algorithm": "Alpha-beta",
+      "best_target": "T2",
+      "best_value": -1,
+      "sequence": [
+        "T2",
+        "T3"
+      ],
+      "nodes": 13,
+      "leaves": 8,
+      "cutoffs": 2,
+      "median_us": 20.1
+    },
+    {
+      "depth": 2,
+      "order": "reverse",
+      "algorithm": "Minimax",
+      "best_target": "T2",
+      "best_value": -1,
+      "sequence": [
+        "T2",
+        "T3"
+      ],
+      "nodes": 17,
+      "leaves": 12,
+      "cutoffs": 0,
+      "median_us": 24.7
+    },
+    {
+      "depth": 2,
+      "order": "reverse",
+      "algorithm": "Alpha-beta",
+      "best_target": "T2",
+      "best_value": -1,
+      "sequence": [
+        "T2",
+        "T3"
+      ],
+      "nodes": 16,
+      "leaves": 11,
+      "cutoffs": 1,
+      "median_us": 23.8
+    },
+    {
+      "depth": 2,
+      "order": "greedy",
+      "algorithm": "Minimax",
+      "best_target": "T2",
+      "best_value": -1,
+      "sequence": [
+        "T2",
+        "T3"
+      ],
+      "nodes": 17,
+      "leaves": 12,
+      "cutoffs": 0,
+      "median_us": 26.6
+    },
+    {
+      "depth": 2,
+      "order": "greedy",
+      "algorithm": "Alpha-beta",
+      "best_target": "T2",
+      "best_value": -1,
+      "sequence": [
+        "T2",
+        "T3"
+      ],
+      "nodes": 11,
+      "leaves": 6,
+      "cutoffs": 3,
+      "median_us": 19.2
+    },
+    {
+      "depth": 4,
+      "order": "original",
+      "algorithm": "Minimax",
+      "best_target": "T3",
+      "best_value": 3,
+      "sequence": [
+        "T3",
+        "T1",
+        "T2",
+        "T4"
+      ],
+      "nodes": 65,
+      "leaves": 24,
+      "cutoffs": 0,
+      "median_us": 96.7
+    },
+    {
+      "depth": 4,
+      "order": "original",
+      "algorithm": "Alpha-beta",
+      "best_target": "T3",
+      "best_value": 3,
+      "sequence": [
+        "T3",
+        "T1",
+        "T2",
+        "T4"
+      ],
+      "nodes": 47,
+      "leaves": 16,
+      "cutoffs": 5,
+      "median_us": 71.9
+    },
+    {
+      "depth": 4,
+      "order": "reverse",
+      "algorithm": "Minimax",
+      "best_target": "T3",
+      "best_value": 3,
+      "sequence": [
+        "T3",
+        "T2",
+        "T1",
+        "T4"
+      ],
+      "nodes": 65,
+      "leaves": 24,
+      "cutoffs": 0,
+      "median_us": 96.8
+    },
+    {
+      "depth": 4,
+      "order": "reverse",
+      "algorithm": "Alpha-beta",
+      "best_target": "T3",
+      "best_value": 3,
+      "sequence": [
+        "T3",
+        "T2",
+        "T1",
+        "T4"
+      ],
+      "nodes": 46,
+      "leaves": 16,
+      "cutoffs": 4,
+      "median_us": 69.9
+    },
+    {
+      "depth": 4,
+      "order": "greedy",
+      "algorithm": "Minimax",
+      "best_target": "T3",
+      "best_value": 3,
+      "sequence": [
+        "T3",
+        "T1",
+        "T2",
+        "T4"
+      ],
+      "nodes": 65,
+      "leaves": 24,
+      "cutoffs": 0,
+      "median_us": 107.5
+    },
+    {
+      "depth": 4,
+      "order": "greedy",
+      "algorithm": "Alpha-beta",
+      "best_target": "T3",
+      "best_value": 3,
+      "sequence": [
+        "T3",
+        "T1",
+        "T2",
+        "T4"
+      ],
+      "nodes": 37,
+      "leaves": 12,
+      "cutoffs": 6,
+      "median_us": 64.8
+    }
+  ],
+  "root_values": {
+    "2": {
+      "T1": -4,
+      "T2": -1,
+      "T3": -2,
+      "T4": -4
+    },
+    "4": {
+      "T1": -5,
+      "T2": 1,
+      "T3": 3,
+      "T4": -7
+    }
+  },
+  "weighted_detour": {
+    "grid": [
+      [
+        1,
+        1,
+        9,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "path": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ]
+    ],
+    "steps": 6,
+    "cost": 6,
+    "direct_path_steps": 4,
+    "direct_path_cost": 12
+  },
+  "matrix_median_us": 1111.5
+}

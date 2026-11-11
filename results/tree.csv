@@ -1,0 +1,5 @@
+﻿order,algorithm,value,nodes,leaves,cutoffs,median_us,trace
+original,Minimax,5,15,8,0,11.1,"[('root.0.0.0', 3), ('root.0.0.1', 5), ('root.0.1.0', 6), ('root.0.1.1', 9), ('root.1.0.0', 6), ('root.1.0.1', 9), ('root.1.1.0', 1), ('root.1.1.1', 2)]"
+original,Alpha-beta,5,14,7,1,10.7,"[('root.0.0.0', 3), ('root.0.0.1', 5), ('root.0.1.0', 6), ('root.1.0.0', 6), ('root.1.0.1', 9), ('root.1.1.0', 1), ('root.1.1.1', 2)]"
+reverse,Minimax,5,15,8,0,10.8,"[('root.1.1.1', 2), ('root.1.1.0', 1), ('root.1.0.1', 9), ('root.1.0.0', 6), ('root.0.1.1', 9), ('root.0.1.0', 6), ('root.0.0.1', 5), ('root.0.0.0', 3)]"
+reverse,Alpha-beta,5,14,7,1,10.8,"[('root.1.1.1', 2), ('root.1.1.0', 1), ('root.1.0.1', 9), ('root.0.1.1', 9), ('root.0.1.0', 6), ('root.0.0.1', 5), ('root.0.0.0', 3)]"
